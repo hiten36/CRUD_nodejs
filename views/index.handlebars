@@ -1,0 +1,86 @@
+{{>model}}
+{{#if flag}}
+    <div class="alert alert-{{color}} alert-dismissible fade show" role="alert">
+        <strong>{{msg}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{{/if}}
+<div class="container">
+    <h1 class="text-center">CRUD App</h1>
+    <div class="box">
+        <form action="/" method="POST">
+            <div class="mb-3">
+                <label for="title" class="form-label">Note Title</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="Title here..">
+            </div>
+            <div class="mb-3">
+                <label for="desc" class="form-label">Note Description</label>
+                <textarea class="form-control" name="desc" id="desc" placeholder="Description here.." rows="3"></textarea>
+            </div>
+            <button class="btn btn-success" type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="box1">
+        <h3 class="text-center my-3">Your Notes</h3>
+        {{#if empty}}
+        <h4>Add some notes first.</h4>
+        {{/if}}
+        {{#if search}}
+            <span style="display: inline-flex; justify-content:center; align-items:center;"><h3 class="mx-2">({{query}}) : </h3> <h5>{{smsg}}</h5></span>
+        {{/if}}
+        {{#unless empty}}
+        <div class="hid">
+            {{cards}}
+        </div>
+        <div class="card-box">
+            <div id="t" class="row">
+
+            </div>
+        </div>
+        {{/unless}}
+    </div>
+</div>
+<script>
+   let str=document.querySelector('.hid').innerText;
+   str=JSON.parse(str);
+   document.querySelector('.hid').style.display='none';
+   let str1="";
+   let n=Object.keys(str).length/4;
+    for(let i=0;i<n;i++)
+    {
+        str1+=`<div class="col-md-4">
+            <div class="card my-2 text-white bg-dark text-center">
+                <div class="card-header">
+                    <h5 class="card-title">${Object.values(str)[4*i]}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">${Object.values(str)[(4*i)+1]}</p>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <input type="hidden" name="hid_id" value="${Object.values(str)[(4*i)+3]}">
+                        <button data-bs-toggle="modal" data-bs-target="#up" type="button" class="up-btn btn btn-info">Update</button>
+                        <form action="delete" method="POST">
+                            <input type="hidden" name="hid_id" value="${Object.values(str)[(4*i)+3]}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">${Object.values(str)[(4*i)+2]}
+                </div>
+            </div>
+        </div>`;
+    }
+    document.getElementById('t').innerHTML=str1;
+    let b1=document.querySelectorAll('.up-btn');
+    for(i of b1)
+    {
+        i.addEventListener('click',(e)=>{
+            let ids=e.target.previousElementSibling.value;
+            let title=e.target.parentNode.previousElementSibling.innerText;
+            let desc=e.target.parentNode.parentNode.previousElementSibling.children[0].innerText;
+            document.getElementById('name1').value=desc;
+            document.getElementById('desc1').value=title;
+            document.getElementById('up-hid').value=ids;
+        })
+    }
+    
+</script>
